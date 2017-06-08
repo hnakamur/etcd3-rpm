@@ -1,0 +1,19 @@
+diff --git a/etcdmain/etcd.go b/etcdmain/etcd.go
+index 58c74b5..ab0ab7f 100644
+--- a/etcdmain/etcd.go
++++ b/etcdmain/etcd.go
+@@ -396,7 +396,12 @@ func setupLogging(cfg *config) {
+ 
+ func checkSupportArch() {
+ 	// TODO qualify arm64
+-	if runtime.GOARCH == "amd64" {
++	if runtime.GOARCH == "amd64" || runtime.GOARCH == "ppc64le" {
++		return
++	}
++	if runtime.GOARCH == "arm64" || runtime.GOARCH == "s390x" {
++		plog.Warningf("Running etcd on %s architecture is experimental.", runtime.GOARCH)
++		plog.Warningf("Please report any bugs you encounter: https://bugzilla.redhat.com/")
+ 		return
+ 	}
+ 	if env, ok := os.LookupEnv("ETCD_UNSUPPORTED_ARCH"); ok && env == runtime.GOARCH {
+
