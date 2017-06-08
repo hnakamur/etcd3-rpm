@@ -3,7 +3,7 @@ etcd3-rpm
 
 A Dockerfile to build [coreos/etcd: Distributed reliable key-value store for the most critical data of a distributed system](https://github.com/coreos/etcd) 3.x rpm for CentOS 7 using [fedora copr](https://copr.fedoraproject.org/).
 
-The spec file and patch files are copied from https://github.com/jcajka/copr-golang/tree/golang1.8
+The spec file and sources files are based on http://vault.centos.org/7.3.1611/extras/Source/SPackages/etcd-3.1.7-1.el7.src.rpm
 
 ## Setup
 
