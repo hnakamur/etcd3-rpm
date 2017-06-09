@@ -21,23 +21,22 @@
 # https://github.com/coreos/etcd
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          d267ca9c184e953554257d0acdd1dc9c47d38229
+%global commit          9d7ed0e63a4e9907c04396d0a9a7a01ba08d2852
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global system_name     etcd
 
 Name:		etcd
-Version:	3.1.8
-Release:	1%{?dist}
+Version:	3.2.0
+Release:	0.1.rc1%{?dist}
 Summary:	A highly-available key value store for shared configuration
 License:	ASL 2.0
 URL:		https://%{provider_prefix}
 Source0:	https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:	%{system_name}.service
-Source2:	%{system_name}.conf
+Source2:	%{system_name}.yml
 Patch2:         0001-change-import-paths.patch
 Patch3:         bz1350875-disaster-recovery-with-copies.patch
-Patch4:         expand-etcd-arch-validation.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:x86_64 aarch64 ppc64le s390x}
@@ -263,8 +262,7 @@ providing packages with %{import_path} prefix.
 %endif
 
 %prep
-#%setup -q -n %{repo}-%{commit}
-%setup -q -n %{repo}-%{version}
+%setup -q -n %{repo}-%{commit}
 # move content of vendor under Godeps as has been so far
 mkdir -p Godeps/_workspace/src
 mv cmd/vendor/* Godeps/_workspace/src/.
@@ -274,7 +272,6 @@ mv cmd/vendor/* Godeps/_workspace/src/.
 %endif
 
 %patch3 -p1
-%patch4 -p1
 
 %build
 mkdir -p src/github.com/coreos
@@ -415,7 +412,7 @@ getent passwd %{system_name} >/dev/null || useradd -r -g %{system_name} -d %{_sh
 %license LICENSE
 %doc *.md
 %doc glide.lock
-%config(noreplace) %{_sysconfdir}/%{system_name}
+%config(noreplace) %{_sysconfdir}/%{system_name}/etcd.yml
 %{_bindir}/%{system_name}
 %{_bindir}/%{system_name}ctl
 %dir %attr(-,%{system_name},%{system_name}) %{_sharedstatedir}/%{system_name}
@@ -436,6 +433,9 @@ getent passwd %{system_name} >/dev/null || useradd -r -g %{system_name} -d %{_sh
 %endif
 
 %changelog
+* Fri Jun 09 2017 Jan Hiroaki Nakamura <hnakamur@gmail.com> - 3.2.0-0.1.rc1
+- Update to 3.2.0-rc.1
+
 * Thu Jun 08 2017 Jan Hiroaki Nakamura <hnakamur@gmail.com> - 3.1.8-1
 - Update to 3.1.8
 
